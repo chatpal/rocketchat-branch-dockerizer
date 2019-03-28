@@ -9,14 +9,27 @@
 
 ## Build
 
-* Run `docker-compose build rocketchat` to build the Rocket.Chat image
-
+* To build the Rocket.Chat image run: 
+  ```
+  docker-compose build rocketchat
+  ```
 
 ## Run
 
 * Rocket.Chat requires a MongoDB instance.  
-  You can start an instance by running `docker-compose up -d mongo`.  
-  After first run, you can create a replica by running `docker-compose up -d mongo-init-replica`.
-* Start Rocket.Chat: `docker-compose up -d rocketchat`
+  You can start an instance by running: 
+  ```
+  docker-compose up -d mongo
+  ```
+  After first run, you can create a replica by running: 
+  ```
+  docker-compose up -d mongo-init-replica
+  ```
+* Start Rocket.Chat: 
+  ```
+  docker-compose up -d rocketchat
+  ```
+* A Chatpal standalone instance is automatically started.
+  To use this instance you can point your chatpal-search provider to: `http://chatpal-search:8983/solr/chatpal`
 
 For more info see: https://rocket.chat/docs/installation/docker-containers/docker-compose/
