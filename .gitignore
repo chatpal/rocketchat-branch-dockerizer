@@ -13,3 +13,4 @@ local.properties
 .settings/
 
 docker-compose.override.yml
+volumes

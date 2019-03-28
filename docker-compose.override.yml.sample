@@ -1,2 +1,16 @@
-version: '2'
+version: '3'
 
+services:
+  rocketchat:
+    build:
+      args:
+        GIT_REPO: [https://repo/url.git]
+        GIT_BRANCH: [branch name]
+        GIT_COMMIT: [branch commit id - default: HEAD]
+
+  chatpal-search:
+    image: [optionally use local image or remove these lines]
+
+  mongo:
+    ports:
+      - [optionally map 27017 to a host port or remove these lines]
