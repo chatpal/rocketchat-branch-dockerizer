@@ -2,9 +2,9 @@
 
 ## Build Preparation
 
-* Copy `docker-compose.override.yml.sample` to `docker-compose.override.yml` and adjust it according to your needs.  
+* Copy `docker-compose.override.yml.sample` to `docker-compose.override.yml` and adjust it according to your needs.
   You can override any parameter that is defined in `docker-compose.yml` or add new parameters.  
-  (Note that multi-valued parameters (like `ports`) are concatenated.)
+  (Note that multi-valued parameters (like `ports`) will be concatenated)
 
 
 ## Build
