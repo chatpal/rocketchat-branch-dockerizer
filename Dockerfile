@@ -1,4 +1,6 @@
-FROM geoffreybooth/meteor-base:1.8.0.2
+ARG BUILD_IMAGE=geoffreybooth/meteor-base:1.8.0.2
+ARG RUNTIME_IMAGE=rocketchat/base:8
+FROM $BUILD_IMAGE
 
 ARG GIT_REPO=https://github.com/RocketChat/Rocket.Chat.git
 ARG GIT_BRANCH=develop
@@ -19,37 +21,22 @@ RUN printf "\n[-] Installing app NPM dependencies...\n\n" \
 RUN printf "\n[-] Building Meteor application bundle...\n\n" \
 &&  mkdir --parents $APP_BUNDLE_FOLDER \
 &&  cd $APP_SOURCE_FOLDER \
-&&  meteor build --directory $APP_BUNDLE_FOLDER --server-only
+&&  TOOL_NODE_FLAGS="--max-old-space-size=4096 --optimize_for_size --gc-interval=100" meteor build --directory $APP_BUNDLE_FOLDER --server-only
 
-FROM debian:jessie-slim
+FROM $RUNTIME_IMAGE
 
 LABEL maintainer="peyman.aparviz@redlink.co"
 
-RUN gpg --batch --keyserver ha.pool.sks-keyservers.net --recv-keys DD8F2338BAE7501E3DD5AC78C273792F7D83545D
-ENV NODE_VERSION 8.11.4
-ENV NODE_ENV production
-RUN set -eux; \
-	apt-get update; \
-	apt-get install -y --no-install-recommends ca-certificates curl; \
-	rm -rf /var/lib/apt/lists/*; \
-	curl -fsSLO --compressed "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x64.tar.gz"; \
-	curl -fsSLO --compressed "https://nodejs.org/dist/v$NODE_VERSION/SHASUMS256.txt.asc"; \
-	gpg --batch --decrypt --output SHASUMS256.txt SHASUMS256.txt.asc; \
-	grep " node-v$NODE_VERSION-linux-x64.tar.gz\$" SHASUMS256.txt | sha256sum -c -; \
-	tar -xf "node-v$NODE_VERSION-linux-x64.tar.gz" -C /usr/local --strip-components=1 --no-same-owner; \
-	rm "node-v$NODE_VERSION-linux-x64.tar.gz" SHASUMS256.txt.asc SHASUMS256.txt; \
-	npm cache clear --force
-
 ENV APP_BUNDLE_FOLDER /opt/bundle
 ENV SCRIPTS_FOLDER /docker
-
-RUN groupadd -r rocketchat \
-&&  useradd -r -g rocketchat rocketchat
 
 VOLUME $APP_BUNDLE_FOLDER/uploads
 
 # Copy in entrypoint
 COPY --from=0 --chown=rocketchat:rocketchat $SCRIPTS_FOLDER $SCRIPTS_FOLDER/
+RUN rm -rf $SCRIPTS_FOLDER/node_modules \
+&&  cd $SCRIPTS_FOLDER/ \
+&&  npm install
 
 # Copy in app bundle
 COPY --from=0 --chown=rocketchat:rocketchat $APP_BUNDLE_FOLDER/bundle $APP_BUNDLE_FOLDER/bundle/
@@ -73,7 +60,6 @@ EXPOSE 3000
 ENV DEPLOY_METHOD=docker \
     NODE_ENV=production \
     MONGO_URL=mongodb://mongo:27017/rocketchat \
-    MONGO_OPLOG_URL=mongodb://mongo:27017/local \
     HOME=/tmp \
     PORT=3000 \
     ROOT_URL=http://localhost:3000 \
