@@ -26,7 +26,7 @@
   To use this instance you can point your chatpal-search provider to: `http://chatpal-search:8983/solr/chatpal`
 
 ### Production
-  It is recommended to use a mongoDB replica.
+  It is recommended to use a mongoDB replica to enable oplog tailing so meteor can be notified of realtime changes in the DB.
   * Add the following environment variable to the `environment` parameter of the `rocketchat` service in your `docker-compose.override.yml`.
   ```bash
   MONGO_OPLOG_URL=mongodb://mongo:27017/local
