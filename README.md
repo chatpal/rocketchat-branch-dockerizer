@@ -3,8 +3,8 @@
 ## Build Preparation
 
   Copy `docker-compose.override.yml.sample` to `docker-compose.override.yml` and adjust it according to your needs.
-  You can override any parameter that is defined in `docker-compose.yml` or add new parameters.
-  (Note that multi-valued parameters (like `ports`) will be concatenated)
+  You can override any parameter that is defined in `docker-compose.yml` or add new parameters.  
+  (Note that multi-valued parameters (like `ports`) will be concatenated)  
   Some important parameters to mention:
   * Meteor version can be changed by changing the `BUILD_IMAGE` build argument of the `rocketchat` service. 
   * Runtime image can be changed using the `RUNTIME_IMAGE` build argument of the `rocketchat` service. 
