@@ -19,9 +19,14 @@ RUN printf "\n[-] Installing app NPM dependencies...\n\n" \
 &&  meteor npm install
 
 RUN printf "\n[-] Building Meteor application bundle...\n\n" \
-&&  mkdir --parents $APP_BUNDLE_FOLDER \
-&&  cd $APP_SOURCE_FOLDER \
-&&  TOOL_NODE_FLAGS="--max-old-space-size=4096 --optimize_for_size --gc-interval=100" meteor build --directory $APP_BUNDLE_FOLDER --server-only
+&&  mkdir --parents $APP_BUNDLE_FOLDER
+
+ENV METEOR_PROFILE=100
+ENV METEOR_DEBUG_BUILD=1
+
+RUN TOOL_NODE_FLAGS="--max-old-space-size=4096 --optimize_for_size --gc-interval=100" meteor build --directory $APP_BUNDLE_FOLDER --server-only
+
+RUN rm -rf $SCRIPTS_FOLDER/node_modules
 
 FROM $RUNTIME_IMAGE
 
@@ -34,8 +39,7 @@ VOLUME $APP_BUNDLE_FOLDER/uploads
 
 # Copy in entrypoint
 COPY --from=0 --chown=rocketchat:rocketchat $SCRIPTS_FOLDER $SCRIPTS_FOLDER/
-RUN rm -rf $SCRIPTS_FOLDER/node_modules \
-&&  cd $SCRIPTS_FOLDER/ \
+RUN cd $SCRIPTS_FOLDER/ \
 &&  npm install
 
 # Copy in app bundle
