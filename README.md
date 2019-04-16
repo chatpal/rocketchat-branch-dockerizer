@@ -16,7 +16,7 @@
   ```
   docker-compose build --no-cache rocketchat
   ```
-  This will take some minutes. Be patient!
+  This will take a while. Please be patient!
   Note: To always fetch the latest code from repository, we use `--no-cache` during build.  
   You can remove this flag if you want to use the docker cache.
 
