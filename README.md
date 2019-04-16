@@ -14,8 +14,11 @@
 
   To build the Rocket.Chat image run: 
   ```
-  docker-compose build rocketchat
+  docker-compose build --no-cache rocketchat
   ```
+  This will take some minutes. Be patient!
+  Note: To always fetch the latest code from repository, we use `--no-cache` during build.  
+  You can remove this flag if you want to use the docker cache.
 
 ## Run
   * You can star Rocket.Chat by running:
